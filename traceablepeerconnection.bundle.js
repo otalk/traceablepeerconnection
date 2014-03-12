@@ -74,6 +74,8 @@ function TraceablePeerConnection(config, constraints) {
     };
 }
 
+util.inherits(TraceablePeerConnection, WildEmitter);
+
 if (TraceablePeerConnection.prototype.__defineGetter__ !== undefined) {
     TraceablePeerConnection.prototype.__defineGetter__('signalingState', function () { return this.peerconnection.signalingState; });
     TraceablePeerConnection.prototype.__defineGetter__('iceConnectionState', function () { return this.peerconnection.iceConnectionState; });
@@ -192,8 +194,6 @@ TraceablePeerConnection.prototype.getStats = function (callback, errback) {
         this.peerconnection.getStats(callback);
     }
 };
-
-util.inherits(TraceablePeerConnection, WildEmitter);
 
 module.exports = TraceablePeerConnection;
 
