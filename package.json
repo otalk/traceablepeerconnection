@@ -1,0 +1,23 @@
+{
+  "name": "traceablepeerconnection",
+  "version": "0.0.0",
+  "description": "Lowlevel RTCPeerConnection wrapper which allows tracing the API calls",
+  "main": "index.js",
+  "keywords": [
+    "WebRTC"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fippo/traceablepeerconnection"
+  },
+  "dependencies": {
+    "wildemitter": "1.x",
+    "webrtcsupport": "0.7.x"
+  },
+  "devDependencies": {
+    "browserify": "2.x",
+    "precommit-hook": "0.3.x"
+  },
+  "author": "Philipp Hancke <fippo@andyet.net>",
+  "license": "MIT"
+}
