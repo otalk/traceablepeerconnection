@@ -4,7 +4,8 @@
   "description": "Lowlevel RTCPeerConnection wrapper which allows tracing the API calls",
   "main": "index.js",
   "keywords": [
-    "WebRTC"
+    "WebRTC",
+    "RTCPeerConnection"
   ],
   "repository": {
     "type": "git",

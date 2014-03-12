@@ -1,5 +1,6 @@
 // based on https://github.com/ESTOS/strophe.jingle/
 // adds wildemitter support
+var util = require('util');
 var webrtc = require('webrtcsupport');
 var WildEmitter = require('wildemitter');
 
@@ -190,5 +191,7 @@ TraceablePeerConnection.prototype.getStats = function (callback, errback) {
         this.peerconnection.getStats(callback);
     }
 };
+
+util.inherits(TraceablePeerConnection, WildEmitter);
 
 module.exports = TraceablePeerConnection;
