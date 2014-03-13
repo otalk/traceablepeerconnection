@@ -95,7 +95,7 @@ TraceablePeerConnection.prototype.removeStream = function (stream) {
 
 TraceablePeerConnection.prototype.createDataChannel = function (label, opts) {
     this.trace('createDataChannel', label, opts);
-    this.peerconnection.createDataChannel(label, opts);
+    return this.peerconnection.createDataChannel(label, opts);
 };
 
 TraceablePeerConnection.prototype.setLocalDescription = function (description, successCallback, failureCallback) {
