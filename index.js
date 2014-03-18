@@ -133,7 +133,9 @@ TraceablePeerConnection.prototype.close = function () {
         window.clearInterval(this.statsinterval);
         this.statsinterval = null;
     }
-    this.peerconnection.close();
+    if (this.peerconnection.signalingState != 'closed') {
+        this.peerconnection.close();
+    }
 };
 
 TraceablePeerConnection.prototype.createOffer = function (successCallback, failureCallback, constraints) {
