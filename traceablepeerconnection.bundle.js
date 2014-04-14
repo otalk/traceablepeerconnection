@@ -191,7 +191,7 @@ TraceablePeerConnection.prototype.addIceCandidate = function (candidate, success
 
 TraceablePeerConnection.prototype.getStats = function (callback, errback) {
     if (navigator.mozGetUserMedia) {
-        // ignore for now...
+        this.peerconnection.getStats(null, callback, errback);
     } else {
         this.peerconnection.getStats(callback);
     }
