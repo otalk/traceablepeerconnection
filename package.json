@@ -1,6 +1,6 @@
 {
   "name": "traceablepeerconnection",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Lowlevel RTCPeerConnection wrapper which allows tracing the API calls",
   "main": "index.js",
   "keywords": [
