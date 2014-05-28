@@ -72,6 +72,8 @@ function TraceablePeerConnection(config, constraints) {
             self.ondatachannel(event);
         }
     };
+    this.getLocalStreams = this.peerconnection.getLocalStreams.bind(this.peerconnection);
+    this.getRemoteStreams = this.peerconnection.getRemoteStreams.bind(this.peerconnection);
 }
 
 util.inherits(TraceablePeerConnection, WildEmitter);
