@@ -6,7 +6,27 @@ var webrtc = require('webrtcsupport');
 var WildEmitter = require('wildemitter');
 
 function dumpSDP(description) {
-    return 'type: ' + description.type + '\r\n' + description.sdp;
+    return {
+        type: description.type,
+        sdp: description.sdp
+    };
+}
+
+function dumpStream(stream) {
+    var info = {
+        label: stream.id,
+    };
+    if (stream.getAudioTracks().length) {
+        info.audio = stream.getAudioTracks().map(function (track) { 
+            return track.id;
+        });
+    }
+    if (stream.getVideoTracks().length) {
+        info.video = stream.getVideoTracks().map(function (track) { 
+            return track.id; 
+        });
+    }
+    return info;
 }
 
 function TraceablePeerConnection(config, constraints) {
@@ -25,21 +45,21 @@ function TraceablePeerConnection(config, constraints) {
 
     this.onicecandidate = null;
     this.peerconnection.onicecandidate = function (event) {
-        self.trace('onicecandidate', JSON.stringify(event.candidate, null, ' '));
+        self.trace('onicecandidate', event.candidate);
         if (self.onicecandidate !== null) {
             self.onicecandidate(event);
         }
     };
     this.onaddstream = null;
     this.peerconnection.onaddstream = function (event) {
-        self.trace('onaddstream', event.stream.id);
+        self.trace('onaddstream', dumpStream(event.stream));
         if (self.onaddstream !== null) {
             self.onaddstream(event);
         }
     };
     this.onremovestream = null;
     this.peerconnection.onremovestream = function (event) {
-        self.trace('onremovestream', event.stream.id);
+        self.trace('onremovestream', dumpStream(event.stream));
         if (self.onremovestream !== null) {
             self.onremovestream(event);
         }
@@ -103,12 +123,12 @@ Object.defineProperty(TraceablePeerConnection.prototype, 'remoteDescription', {
 });
 
 TraceablePeerConnection.prototype.addStream = function (stream) {
-    this.trace('addStream', stream.id);
+    this.trace('addStream', dumpStream(stream));
     this.peerconnection.addStream(stream);
 };
 
 TraceablePeerConnection.prototype.removeStream = function (stream) {
-    this.trace('removeStream', stream.id);
+    this.trace('removeStream', dumpStream(stream))
     this.peerconnection.removeStream(stream);
 };
 
@@ -160,7 +180,7 @@ TraceablePeerConnection.prototype.close = function () {
 
 TraceablePeerConnection.prototype.createOffer = function (successCallback, failureCallback, constraints) {
     var self = this;
-    this.trace('createOffer', JSON.stringify(constraints, null, ' '));
+    this.trace('createOffer', constraints);
     this.peerconnection.createOffer(
         function (offer) {
             self.trace('createOfferOnSuccess', dumpSDP(offer));
@@ -176,7 +196,7 @@ TraceablePeerConnection.prototype.createOffer = function (successCallback, failu
 
 TraceablePeerConnection.prototype.createAnswer = function (successCallback, failureCallback, constraints) {
     var self = this;
-    this.trace('createAnswer', JSON.stringify(constraints, null, ' '));
+    this.trace('createAnswer', constraints);
     this.peerconnection.createAnswer(
         function (answer) {
             self.trace('createAnswerOnSuccess', dumpSDP(answer));
@@ -192,12 +212,10 @@ TraceablePeerConnection.prototype.createAnswer = function (successCallback, fail
 
 TraceablePeerConnection.prototype.addIceCandidate = function (candidate, successCallback, failureCallback) {
     var self = this;
-    this.trace('addIceCandidate', JSON.stringify(candidate, null, ' '));
-    this.peerconnection.addIceCandidate(candidate);
-    /* maybe later
+    this.trace('addIceCandidate', candidate);
     this.peerconnection.addIceCandidate(candidate, 
         function () {                                
-            self.trace('addIceCandidateOnSuccess');
+            //self.trace('addIceCandidateOnSuccess');
             successCallback();
         },
         function (err) {
@@ -205,7 +223,6 @@ TraceablePeerConnection.prototype.addIceCandidate = function (candidate, success
             failureCallback(err);
         }
     );
-    */
 };
 
 TraceablePeerConnection.prototype.getStats = function (callback, errback) {
@@ -1001,7 +1018,9 @@ var PC = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
 var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
 var SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
 var MediaStream = window.webkitMediaStream || window.MediaStream;
-var screenSharing = window.location.protocol === 'https:' && window.navigator.userAgent.match('Chrome') && parseInt(window.navigator.userAgent.match(/Chrome\/(.*) /)[1], 10) >= 26;
+var screenSharing = window.location.protocol === 'https:' &&
+    ((window.navigator.userAgent.match('Chrome') && parseInt(window.navigator.userAgent.match(/Chrome\/(.*) /)[1], 10) >= 26) ||
+     (window.navigator.userAgent.match('Firefox') && parseInt(window.navigator.userAgent.match(/Firefox\/(.*)/)[1], 10) >= 33));
 var AudioContext = window.webkitAudioContext || window.AudioContext;
 
 
@@ -1016,7 +1035,8 @@ module.exports = {
     AudioContext: AudioContext,
     PeerConnection: PC,
     SessionDescription: SessionDescription,
-    IceCandidate: IceCandidate
+    IceCandidate: IceCandidate,
+    MediaStream: MediaStream
 };
 
 },{}],5:[function(require,module,exports){
