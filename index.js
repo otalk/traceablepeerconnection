@@ -215,11 +215,11 @@ TraceablePeerConnection.prototype.addIceCandidate = function (candidate, success
     this.peerconnection.addIceCandidate(candidate,
         function () {
             //self.trace('addIceCandidateOnSuccess');
-            successCallback();
+            if (successCallback) successCallback();
         },
         function (err) {
             self.trace('addIceCandidateOnFailure', err);
-            failureCallback(err);
+            if (failureCallback) failureCallback(err);
         }
     );
 };

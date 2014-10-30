@@ -17,13 +17,13 @@ function dumpStream(stream) {
         label: stream.id,
     };
     if (stream.getAudioTracks().length) {
-        info.audio = stream.getAudioTracks().map(function (track) { 
+        info.audio = stream.getAudioTracks().map(function (track) {
             return track.id;
         });
     }
     if (stream.getVideoTracks().length) {
-        info.video = stream.getVideoTracks().map(function (track) { 
-            return track.id; 
+        info.video = stream.getVideoTracks().map(function (track) {
+            return track.id;
         });
     }
     return info;
@@ -128,7 +128,7 @@ TraceablePeerConnection.prototype.addStream = function (stream) {
 };
 
 TraceablePeerConnection.prototype.removeStream = function (stream) {
-    this.trace('removeStream', dumpStream(stream))
+    this.trace('removeStream', dumpStream(stream));
     this.peerconnection.removeStream(stream);
 };
 
@@ -213,14 +213,14 @@ TraceablePeerConnection.prototype.createAnswer = function (successCallback, fail
 TraceablePeerConnection.prototype.addIceCandidate = function (candidate, successCallback, failureCallback) {
     var self = this;
     this.trace('addIceCandidate', candidate);
-    this.peerconnection.addIceCandidate(candidate, 
-        function () {                                
+    this.peerconnection.addIceCandidate(candidate,
+        function () {
             //self.trace('addIceCandidateOnSuccess');
-            successCallback();
+            if (successCallback) successCallback();
         },
         function (err) {
             self.trace('addIceCandidateOnFailure', err);
-            failureCallback(err);
+            if (failureCallback) failureCallback(err);
         }
     );
 };
