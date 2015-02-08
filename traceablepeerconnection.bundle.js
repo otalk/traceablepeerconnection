@@ -33,7 +33,7 @@ function TraceablePeerConnection(config, constraints) {
     var self = this;
     WildEmitter.call(this);
 
-    this.peerconnection = new webrtc.PeerConnection.apply(config, constraints);
+    this.peerconnection = new webrtc.PeerConnection(config, constraints);
 
     this.trace = function (what, info) {
         self.emit('PeerConnectionTrace', {
