@@ -32,7 +32,7 @@ function TraceablePeerConnection(config, constraints) {
     var self = this;
     WildEmitter.call(this);
 
-    this.peerconnection = new webrtc.PeerConnection(config, constraints);
+    this.peerconnection = new webrtc.PeerConnection.apply(config, constraints);
 
     this.trace = function (what, info) {
         self.emit('PeerConnectionTrace', {
@@ -97,28 +97,12 @@ function TraceablePeerConnection(config, constraints) {
 
 util.inherits(TraceablePeerConnection, WildEmitter);
 
-Object.defineProperty(TraceablePeerConnection.prototype, 'signalingState', {
-    get: function () {
-        return this.peerconnection.signalingState;
-    }
-});
-
-Object.defineProperty(TraceablePeerConnection.prototype, 'iceConnectionState', {
-    get: function () {
-        return this.peerconnection.iceConnectionState;
-    }
-});
-
-Object.defineProperty(TraceablePeerConnection.prototype, 'localDescription', {
-    get: function () {
-        return this.peerconnection.localDescription;
-    }
-});
-
-Object.defineProperty(TraceablePeerConnection.prototype, 'remoteDescription', {
-    get: function () {
-        return this.peerconnection.remoteDescription;
-    }
+['signalingState', 'iceConnectionState', 'localDescription', 'remoteDescription'].forEach(function (prop) {
+    Object.defineProperty(TraceablePeerConnection.prototype, prop, {
+        get: function () {
+            return this.peerconnection[prop];
+        }
+    });
 });
 
 TraceablePeerConnection.prototype.addStream = function (stream) {
@@ -142,11 +126,11 @@ TraceablePeerConnection.prototype.setLocalDescription = function (description, s
     this.peerconnection.setLocalDescription(description,
         function () {
             self.trace('setLocalDescriptionOnSuccess');
-            successCallback();
+            if (successCallback) successCallback();
         },
         function (err) {
             self.trace('setLocalDescriptionOnFailure', err);
-            failureCallback(err);
+            if (failureCallback) failureCallback(err);
         }
     );
 };
@@ -157,21 +141,17 @@ TraceablePeerConnection.prototype.setRemoteDescription = function (description, 
     this.peerconnection.setRemoteDescription(description,
         function () {
             self.trace('setRemoteDescriptionOnSuccess');
-            successCallback();
+            if (successCallback) successCallback();
         },
         function (err) {
             self.trace('setRemoteDescriptionOnFailure', err);
-            failureCallback(err);
+            if (failureCallback) failureCallback(err);
         }
     );
 };
 
 TraceablePeerConnection.prototype.close = function () {
     this.trace('stop');
-    if (this.statsinterval !== null) {
-        window.clearInterval(this.statsinterval);
-        this.statsinterval = null;
-    }
     if (this.peerconnection.signalingState != 'closed') {
         this.peerconnection.close();
     }
@@ -183,11 +163,11 @@ TraceablePeerConnection.prototype.createOffer = function (successCallback, failu
     this.peerconnection.createOffer(
         function (offer) {
             self.trace('createOfferOnSuccess', dumpSDP(offer));
-            successCallback(offer);
+            if (successCallback) successCallback(offer);
         },
         function (err) {
             self.trace('createOfferOnFailure', err);
-            failureCallback(err);
+            if (failureCallback) failureCallback(err);
         },
         constraints
     );
@@ -199,11 +179,11 @@ TraceablePeerConnection.prototype.createAnswer = function (successCallback, fail
     this.peerconnection.createAnswer(
         function (answer) {
             self.trace('createAnswerOnSuccess', dumpSDP(answer));
-            successCallback(answer);
+            if (successCallback) successCallback(answer);
         },
         function (err) {
             self.trace('createAnswerOnFailure', err);
-            failureCallback(err);
+            if (failureCallback) failureCallback(err);
         },
         constraints
     );
