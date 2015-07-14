@@ -204,12 +204,8 @@ TraceablePeerConnection.prototype.addIceCandidate = function (candidate, success
     );
 };
 
-TraceablePeerConnection.prototype.getStats = function (callback, errback) {
-    if (navigator.mozGetUserMedia) {
-        this.peerconnection.getStats(null, callback, errback);
-    } else {
-        this.peerconnection.getStats(callback);
-    }
+TraceablePeerConnection.prototype.getStats = function () {
+    this.peerconnection.getStats.apply(this, arguments);
 };
 
 module.exports = TraceablePeerConnection;
