@@ -1,7 +1,7 @@
 // based on https://github.com/ESTOS/strophe.jingle/
 // adds wildemitter support
 var util = require('util');
-var webrtc = require('webrtcsupport');
+var adapter = require('webrtc-adapter-test');
 var WildEmitter = require('wildemitter');
 
 function dumpSDP(description) {
@@ -32,7 +32,7 @@ function TraceablePeerConnection(config, constraints) {
     var self = this;
     WildEmitter.call(this);
 
-    this.peerconnection = new webrtc.PeerConnection(config, constraints);
+    this.peerconnection = new window.RTCPeerConnection(config, constraints);
 
     this.trace = function (what, info) {
         self.emit('PeerConnectionTrace', {
@@ -204,12 +204,8 @@ TraceablePeerConnection.prototype.addIceCandidate = function (candidate, success
     );
 };
 
-TraceablePeerConnection.prototype.getStats = function (callback, errback) {
-    if (navigator.mozGetUserMedia) {
-        this.peerconnection.getStats(null, callback, errback);
-    } else {
-        this.peerconnection.getStats(callback);
-    }
+TraceablePeerConnection.prototype.getStats = function () {
+    this.peerconnection.getStats.apply(this, arguments);
 };
 
 module.exports = TraceablePeerConnection;

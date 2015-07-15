@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "wildemitter": "1.x",
-    "webrtcsupport": "^1.1.0"
+    "webrtc-adapter-test": "^0.1.6"
   },
   "devDependencies": {
     "browserify": "2.x",
