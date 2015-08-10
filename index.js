@@ -205,7 +205,7 @@ TraceablePeerConnection.prototype.addIceCandidate = function (candidate, success
 };
 
 TraceablePeerConnection.prototype.getStats = function () {
-    this.peerconnection.getStats.apply(this.pc, arguments);
+    this.peerconnection.getStats.apply(this.peerconnection, arguments);
 };
 
 module.exports = TraceablePeerConnection;
