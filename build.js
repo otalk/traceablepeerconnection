@@ -1,6 +1,6 @@
-var bundle = require('browserify')(),
+var bundle = require('browserify')({standalone: 'PeerConnection'}),
     fs = require('fs');
 
 
 bundle.add('./index');
-bundle.bundle({standalone: 'PeerConnection'}).pipe(fs.createWriteStream('traceablepeerconnection.bundle.js'));
+bundle.bundle().pipe(fs.createWriteStream('traceablepeerconnection.bundle.js'));

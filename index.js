@@ -1,7 +1,7 @@
 // based on https://github.com/ESTOS/strophe.jingle/
 // adds wildemitter support
 var util = require('util');
-var adapter = require('webrtc-adapter-test');
+var adapter = require('webrtc-adapter'); // jshint ignore:line
 var WildEmitter = require('wildemitter');
 
 function dumpSDP(description) {
