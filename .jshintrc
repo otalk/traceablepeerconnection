@@ -11,5 +11,6 @@
     "trailing": true,
     "indent": 4,
     "latedef": true,
-    "newcap": true
+    "newcap": true,
+    "unused": true
 }
