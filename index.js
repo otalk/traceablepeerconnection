@@ -77,6 +77,13 @@ function TraceablePeerConnection(config, constraints) {
             self.oniceconnectionstatechange(event);
         }
     };
+    this.onicegatheringstatechange = null;
+    this.peerconnection.onicegatheringstatechange = function (event) {
+        self.trace('onicegatheringstatechange', self.iceGatheringState);
+        if (self.onicegatheringstatechange !== null) {
+            self.onicegatheringstatechange(event);
+        }
+    };
     this.onnegotiationneeded = null;
     this.peerconnection.onnegotiationneeded = function (event) {
         self.trace('onnegotiationneeded');
