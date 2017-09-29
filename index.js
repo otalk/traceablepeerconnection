@@ -104,7 +104,7 @@ function TraceablePeerConnection(config, constraints) {
 
 util.inherits(TraceablePeerConnection, WildEmitter);
 
-['signalingState', 'iceConnectionState', 'localDescription', 'remoteDescription'].forEach(function (prop) {
+['signalingState', 'iceGatheringState', 'iceConnectionState', 'localDescription', 'remoteDescription'].forEach(function (prop) {
     Object.defineProperty(TraceablePeerConnection.prototype, prop, {
         get: function () {
             return this.peerconnection[prop];
